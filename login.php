@@ -1,6 +1,6 @@
 <?php
 $host_name = 'localhost';
-$db = 'publications';
+$db = 'mycounter';
 $user_name = 'root';
 $password = 'Ma1rik23';
 
