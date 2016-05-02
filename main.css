@@ -1,0 +1,14 @@
+html {
+    box-sizing: border-box;
+}
+
+#progress-bar-container {
+    border: 1px solid black;
+    width: 500px;
+    position: relative;
+    height: 50px;
+}
+#progress-bar {
+    background-color: blue;
+    50px;
+}

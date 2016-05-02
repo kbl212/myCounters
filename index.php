@@ -19,7 +19,7 @@ require_once 'login.php';
 $conn = mysqli_connect($host_name, $user_name, $password, $db);
 if ($conn->connect_error) die($conn->connect_error);
 
-echo '<br><br>Connected successfully';
+//echo '<br><br>Connected successfully';
 
 if (isset($_POST['countAdd']))
 {
@@ -30,35 +30,82 @@ if (isset($_POST['countAdd']))
     $row = $getResult->fetch_array(MYSQL_NUM);
     $curr_kyle_count = $row[1];
     $new_count = $row[1] + 1;
-    echo "<br><br>new Count would be..." . $new_count;
     
     $updateQuery = 'UPDATE counts SET count = ' . $new_count . ' WHERE name="KyleCount"';
     $updateResult = $conn->query($updateQuery);
     if (!$updateResult) echo "update failed...";
 }
+if (isset($_POST['newCountName']))
+{
+    $new_count_name = get_post($conn, 'newCountName');
+    $postQuery = "INSERT INTO counts(name, count) VALUES" . "('$new_count_name', '0')";
+    $result = $conn->query($postQuery);
+    if (!$result) echo "INSERT failed: $postQuery<br>" .
+        $conn->error . "<br><br>";
+}
+echo <<<_END
+    <form action="index.php" method="post">
+    New Count Name: <input name="newCountName" style="{width: 200px; height: 50px}">
+    <input type="submit" value="ADD NEW COUNT">
+    </form
+
+_END;
+        
 
 $query = "SELECT * FROM counts";
 $result = $conn->query($query);
 if (!$result) echo "QUERY FAILED";
 else 
 {
-    $result->data_seek(0);
-    $row = $result->fetch_array(MYSQLI_NUM);
-    echo "<br><br>" . "Current Count for " . "$row[0]" . " is: " . "$row[1]";
-}
-$result->close();
-$conn->close();
-?>
-        
-        
-    </span>
+                                                  /*  
+                                                    $rows = $result->num_rows;
 
+                                                for ($j = 0; $j < $rows; ++$j)
+                                                {
+                                                    $result->data_seek($j);
+                                                    $row = $result->fetch_array(MYSQLI_NUM);
+                                                    echo <<<_END
+                                                    <pre>
+                                                        Author $row[0]
+                                                        Title $row[1]
+                                                        Category $row[2]
+                                                        Year $row[3]
+                                                        ISBN $row[4]
+                                                    </pre>
+                                                    <form action="sqltest.php"
+                                                    method="post">
+                                                    <input type="hidden" name="delete" value="yes">
+                                                    <input type="hidden" name="isbn" value="$row[4]">
+                                                    <input type="submit" value="DELETE RECORD"></form>
+                                                _END;
+
+                                                }
+                                                    */
+    $rows = $result->num_rows;
+    
+    for ($j = 0; $j < $rows; ++$j)
+    {
+        
+    $result->data_seek($j);
+    $row = $result->fetch_array(MYSQLI_NUM);
+    echo "<br><br>" . "Current Count for " . "$row[0]" . " is: " . "<span>" . $row[1] . "</span>"; } } $result->close(); $conn->close(); function get_post($conn, $var) { return $conn->real_escape_string($_POST[$var]); } ?>
+
+
+    </span>
+    <div id="progress-bar-container">
+        <div id="progress-bar" ng-style="{'width': '{{currCount}}%' }"> </div>
+    </div>
+    </div>
     <h3>ADD MORE!</h3>
     <form action="index.php" method="post">
-    <input name="countAdd" type="hidden" value="" ng-model="countAdd">
-    <input type="submit" value="+1" ng-click="populateCountAdd()">
+        <input name="countAdd" type="hidden" value="" ng-model="countAdd">
+        <input type="submit" value="+1" ng-click="populateCountAdd()">
     </form>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js"></script>
+    <script src="app.js"></script>
+    <script src="mainCtrl.js"></script>
 </body>
 
 </html>
