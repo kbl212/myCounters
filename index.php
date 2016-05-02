@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="main.css" />
 </head>
 
-<body>
+<body ng-controller="mainCtrl">
     <span ng-model="currCount">
         
         
@@ -55,8 +55,8 @@ $conn->close();
 
     <h3>ADD MORE!</h3>
     <form action="index.php" method="post">
-    <input name="countAdd" type="hidden" value="1">
-    <input type="submit" value="+1">
+    <input name="countAdd" type="hidden" value="" ng-model="countAdd">
+    <input type="submit" value="+1" ng-click="populateCountAdd()">
     </form>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js"></script>
 </body>
