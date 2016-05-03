@@ -9,7 +9,7 @@
 </head>
 
 <body ng-controller="mainCtrl">
-    <span ng-model="currCount">
+    <span>
         
         
         
@@ -23,17 +23,24 @@ if ($conn->connect_error) die($conn->connect_error);
 
 if (isset($_POST['countAdd']))
 {
+    echo $_POST['countAdd'] . " ......TEST";
     $getQuery = "SELECT * FROM counts";
     $getResult = $conn->query($getQuery);
     if (!$getResult) echo "GET query failed";
-    $getResult->data_seek(0);
-    $row = $getResult->fetch_array(MYSQL_NUM);
-    $curr_kyle_count = $row[1];
-    $new_count = $row[1] + 1;
+    $rows = $getResult->num_rows;
     
-    $updateQuery = 'UPDATE counts SET count = ' . $new_count . ' WHERE name="KyleCount"';
+    for ($j = 0; $j < $rows; ++$j)
+    {
+    $getResult->data_seek($j);
+    $row = $getResult->fetch_array(MYSQL_NUM);
+    $new_count = $row[1] + 1;
+    $updateQuery = 'UPDATE counts SET count = ' . $new_count . ' WHERE id = ' . $row[2];
+    if ($row[2] == $_POST['countAdd'])
+    {
     $updateResult = $conn->query($updateQuery);
     if (!$updateResult) echo "update failed...";
+    }
+    }
 }
 if (isset($_POST['newCountName']))
 {
@@ -57,30 +64,6 @@ $result = $conn->query($query);
 if (!$result) echo "QUERY FAILED";
 else 
 {
-                                                  /*  
-                                                    $rows = $result->num_rows;
-
-                                                for ($j = 0; $j < $rows; ++$j)
-                                                {
-                                                    $result->data_seek($j);
-                                                    $row = $result->fetch_array(MYSQLI_NUM);
-                                                    echo <<<_END
-                                                    <pre>
-                                                        Author $row[0]
-                                                        Title $row[1]
-                                                        Category $row[2]
-                                                        Year $row[3]
-                                                        ISBN $row[4]
-                                                    </pre>
-                                                    <form action="sqltest.php"
-                                                    method="post">
-                                                    <input type="hidden" name="delete" value="yes">
-                                                    <input type="hidden" name="isbn" value="$row[4]">
-                                                    <input type="submit" value="DELETE RECORD"></form>
-                                                _END;
-
-                                                }
-                                                    */
     $rows = $result->num_rows;
     
     for ($j = 0; $j < $rows; ++$j)
@@ -88,7 +71,12 @@ else
         
     $result->data_seek($j);
     $row = $result->fetch_array(MYSQLI_NUM);
-    echo "<br><br>" . "Current Count for " . "$row[0]" . " is: " . "<span>" . $row[1] . "</span>"; } } $result->close(); $conn->close(); function get_post($conn, $var) { return $conn->real_escape_string($_POST[$var]); } ?>
+    $currId = $row[2];
+    echo "<br><br>" . "Current Count for " . "$row[0]" . " is: " . "<span>" . $row[1] . "</span>" . '
+    <form action="index.php" method="post">
+        <input name="countAdd" type="text" value="' . $currId . '">
+        <input type="submit" value="+1">
+    </form>'; } } $result->close(); $conn->close(); function get_post($conn, $var) { return $conn->real_escape_string($_POST[$var]); } ?>
 
 
     </span>
@@ -97,10 +85,7 @@ else
     </div>
     </div>
     <h3>ADD MORE!</h3>
-    <form action="index.php" method="post">
-        <input name="countAdd" type="hidden" value="" ng-model="countAdd">
-        <input type="submit" value="+1" ng-click="populateCountAdd()">
-    </form>
+
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js"></script>
