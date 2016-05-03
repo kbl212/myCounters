@@ -2,6 +2,16 @@ html {
     box-sizing: border-box;
 }
 
+html, body, div, form {
+    background-color: purple;
+    font-weight: bold;
+    color: #fff;
+}
+
+input {
+    color: #000;
+}
+
 #progress-bar-container {
     border: 1px solid black;
     width: 500px;
@@ -20,4 +30,12 @@ html {
 
 .fa-minus-square:hover {
     cursor: pointer;
+}
+
+form {
+    display: inline-block;
+}
+
+.current-count {
+    font-size: 48px;
 }
