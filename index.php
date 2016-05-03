@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Counter</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
     <link rel="stylesheet" href="main.css" />
 </head>
 
@@ -21,9 +23,18 @@ if ($conn->connect_error) die($conn->connect_error);
 
 //echo '<br><br>Connected successfully';
 
+        
+if (isset($_POST['delete']) && isset($_POST['countAdd']))
+{
+    echo "SURPRISE!";
+    $id = get_post($conn, 'countAdd');
+    $query = "DELETE FROM counts WHERE id='$id'";
+    $result = $conn->query($query);
+    if (!$result) echo "DELETE failed: $query<br>" .
+        $conn->error . "<br><br>";
+}
 if (isset($_POST['countAdd']))
 {
-    echo $_POST['countAdd'] . " ......TEST";
     $getQuery = "SELECT * FROM counts";
     $getResult = $conn->query($getQuery);
     if (!$getResult) echo "GET query failed";
@@ -76,7 +87,18 @@ else
     <form action="index.php" method="post">
         <input name="countAdd" type="text" value="' . $currId . '">
         <input type="submit" value="+1">
-    </form>'; } } $result->close(); $conn->close(); function get_post($conn, $var) { return $conn->real_escape_string($_POST[$var]); } ?>
+    </form>' . '
+    <form action="index.php" method="post">
+    <input type="hidden" name="countAdd" value="' . $currId . '">
+    <input type="hidden" name="delete" value="yes">
+    <!--<i name="delete" class="fa fa-minus-square"></i>-->
+    <input type="submit" value="DELETE">
+    </form>
+        
+    '; } 
+}      
+        
+        $result->close(); $conn->close(); function get_post($conn, $var) { return $conn->real_escape_string($_POST[$var]); } ?>
 
 
     </span>
